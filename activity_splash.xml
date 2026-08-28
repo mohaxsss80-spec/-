@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:fitsSystemWindows="true">
+
+    <!-- Animated background watermark -->
+    <TextView
+        android:id="@+id/watermark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/developer_name"
+        android:textColor="@color/watermark"
+        android:textSize="42sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.15"
+        android:alpha="0.35"
+        android:rotation="-18" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <!-- Logo circle -->
+        <FrameLayout
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:background="@drawable/logo_circle"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="🦅"
+                android:textSize="48sp" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="منصة طلاب سوريا"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="نتائجنا"
+            android:textColor="@color/text_white"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:id="@+id/developerLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="AWAD HAZIM"
+            android:textColor="@color/accent_green"
+            android:textSize="13sp"
+            android:letterSpacing="0.25"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/splashProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="120dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="40dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/accent_green" />
+    </LinearLayout>
+</FrameLayout>
