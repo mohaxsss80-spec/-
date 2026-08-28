@@ -1,4 +1,4 @@
-name: Build Android APK Final
+name: Official Android APK Build
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Restructure Project
+      - name: Create Standard Directory Structure
         run: |
           mkdir -p app/src/main/java app/src/main/res/layout app/src/main/res/values
           mv *.java app/src/main/java/ 2>/dev/null || true
@@ -30,15 +30,17 @@ jobs:
           mv AndroidManifest.xml app/src/main/ 2>/dev/null || true
           mv build.gradle app/ 2>/dev/null || true
 
-      - name: Build APK via Android Build Action
-        uses: hanandres/android-build-action@v1.2
-        with:
-          project-root: '.'
+      - name: Generate Fresh Gradle Wrapper
+        run: |
+          gradle wrapper --gradle-version 8.2
+
+      - name: Build APK with Official Tools
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Generated-Android-APK
-          path: |
-            **/build/outputs/apk/**/*.apk
-            **/*.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
