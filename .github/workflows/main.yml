@@ -19,15 +19,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Android APK via Easy Builder
-        uses: soulsam480/ ionic-github-action-build@master
-        continue-on-error: true
-        with:
-          platform: android
+      - name: Restructure Project
+        run: |
+          mkdir -p app/src/main/java app/src/main/res/layout app/src/main/res/values
+          mv *.java app/src/main/java/ 2>/dev/null || true
+          mv activity_*.xml app/src/main/res/layout/ 2>/dev/null || true
+          mv colors.xml app/src/main/res/values/ 2>/dev/null || true
+          mv ic_launcher*.xml app/src/main/res/layout/ 2>/dev/null || true
+          mv logo_circle.xml app/src/main/res/layout/ 2>/dev/null || true
+          mv AndroidManifest.xml app/src/main/ 2>/dev/null || true
+          mv build.gradle app/ 2>/dev/null || true
 
-      # محاولة بناء بديلة وقوية في حال لم تنجح الأداة الأولى
-      - name: Build APK via Android Actions
-        uses: khaledw/android-build-action@v1
+      - name: Build APK via Android Build Action
+        uses: hanandres/android-build-action@v1.2
         with:
           project-root: '.'
 
