@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK Final
 
 on:
   push:
@@ -13,51 +13,28 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Restructure Project Directories for Android Studio
-        run: |
-          # إنشاء هيكلة المجلدات القياسية لأندرويد تلقائياً في بيئة البناء
-          mkdir -p app/src/main/java app/src/main/res/layout app/src/main/res/values
-          
-          # نقل ملفات الجافا البرمجية إلى مكانها الصحيح
-          mv *.java app/src/main/java/ 2>/dev/null || true
-          
-          # نقل ملفات الواجهات XML إلى مجلد التخطيط
-          mv activity_*.xml app/src/main/res/layout/ 2>/dev/null || true
-          
-          # نقل ملفات الإعدادات والألوان إلى مجلد القيم
-          mv colors.xml app/src/main/res/values/ 2>/dev/null || true
-          
-          # نقل ملفات الأيقونات والصور إن وجدت
-          mv ic_launcher*.xml app/src/main/res/layout/ 2>/dev/null || true
-          mv logo_circle.xml app/src/main/res/layout/ 2>/dev/null || true
-          
-          # نقل ملف المانيفست الأساسي للتطبيق
-          mv AndroidManifest.xml app/src/main/ 2>/dev/null || true
-          
-          # نقل ملف الإعدادات الفرعي الخاص بالتطبيق
-          mv build.gradle app/ 2>/dev/null || true
-          
-          # إبقاء ملفات الإعدادات العامة في المجلد الرئيسي
-          if [ -f app/settings.gradle ]; then mv app/settings.gradle .; fi
-          if [ -f app/README.md ]; then mv app/README.md .; fi
-          
-          echo "تم إعادة تنظيم الملفات بنجاح تلقائياً!"
-
       - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Build Android APK via Easy Builder
+        uses: soulsam480/ ionic-github-action-build@master
+        continue-on-error: true
+        with:
+          platform: android
 
-      - name: Build with Gradle
-        run: gradle assembleDebug
+      # محاولة بناء بديلة وقوية في حال لم تنجح الأداة الأولى
+      - name: Build APK via Android Actions
+        uses: khaledw/android-build-action@v1
+        with:
+          project-root: '.'
 
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Generated-Android-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            **/build/outputs/apk/**/*.apk
+            **/*.apk
