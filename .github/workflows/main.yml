@@ -21,7 +21,7 @@ jobs:
 
       - name: Generate Perfect Fresh Android Project Structure
         run: |
-          # 1. إنشاء الهيكل القياسي النظيف
+          # 1. إنشاء الهيكل القياسي النظيف للمشروع
           mkdir -p app/src/main/java/com/example/app app/src/main/res/layout app/src/main/res/values
           
           # 2. نقل ملفات البرمجة والواجهات لأماكنها الصحيحة
@@ -32,7 +32,7 @@ jobs:
           mv logo_circle.xml app/src/main/res/layout/ 2>/dev/null || true
           mv AndroidManifest.xml app/src/main/ 2>/dev/null || true
 
-          # 3. كتابة ملف إعدادات بناء (build.gradle) جديد كلياً وسليم 100%
+          # 3. كتابة ملف إعدادات بناء (build.gradle) متوافق مع أدوات النظام المثبتة
           cat << 'EOF' > app/build.gradle
           plugins {
               id 'com.android.application'
@@ -55,7 +55,7 @@ jobs:
           }
           EOF
 
-          # 4. كتابة ملفات التكوين الأساسية للمشروع
+          # 4. كتابة ملفات التكوين والـ Repositories الأساسية للمشروع
           cat << 'EOF' > settings.gradle
           pluginManagement {
               repositories {
@@ -77,18 +77,14 @@ jobs:
 
           cat << 'EOF' > build.gradle
           plugins {
-              id 'com.android.application' version '8.2.2' apply false
+              id 'com.android.application' version '8.0.2' apply false
           }
           EOF
 
-      - name: Generate Fresh Gradle Wrapper
+      - name: Build APK via Native System Gradle
         run: |
-          gradle wrapper --gradle-version 8.2.2
-
-      - name: Build Official Android APK
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          # استخدام أداة Gradle المثبتة أساساً في نظام أوبونتو دون تحميل غلاف خارجي
+          gradle assembleDebug --no-daemon
 
       - name: Upload Finished APK Artifact
         uses: actions/upload-artifact@v4
