@@ -1,42 +1,34 @@
-name: Deploy Static Website to GitHub Pages
+name: Build Android APK
 
 on:
   push:
-    branches: ["main"] # سيبدأ البناء التلقائي عند رفع أي تعديل على فرع main
-
-  # يسمح لك بتشغيل عملية البناء يدوياً من علامة التبويب Actions
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
-# إعطاء الصلاحيات اللازمة لرفع الملفات إلى GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# إدارة عمليات البناء المتزامنة
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          # رفع المجلد الرئيسي الذي يحتوي على ملف index.html
-          path: '.'
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        continue-on-error: true
+
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug
+
+      - name: Upload Finished APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Generated-Android-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
