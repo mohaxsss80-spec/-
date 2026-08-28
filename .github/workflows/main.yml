@@ -1,4 +1,4 @@
-name: Official Android APK Build
+name: Ultimate Android APK Builder
 
 on:
   push:
@@ -19,22 +19,73 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Create Standard Directory Structure
+      - name: Generate Perfect Fresh Android Project Structure
         run: |
-          mkdir -p app/src/main/java app/src/main/res/layout app/src/main/res/values
-          mv *.java app/src/main/java/ 2>/dev/null || true
+          # 1. إنشاء الهيكل القياسي النظيف
+          mkdir -p app/src/main/java/com/example/app app/src/main/res/layout app/src/main/res/values
+          
+          # 2. نقل ملفات البرمجة والواجهات لأماكنها الصحيحة
+          mv *.java app/src/main/java/com/example/app/ 2>/dev/null || true
           mv activity_*.xml app/src/main/res/layout/ 2>/dev/null || true
           mv colors.xml app/src/main/res/values/ 2>/dev/null || true
           mv ic_launcher*.xml app/src/main/res/layout/ 2>/dev/null || true
           mv logo_circle.xml app/src/main/res/layout/ 2>/dev/null || true
           mv AndroidManifest.xml app/src/main/ 2>/dev/null || true
-          mv build.gradle app/ 2>/dev/null || true
+
+          # 3. كتابة ملف إعدادات بناء (build.gradle) جديد كلياً وسليم 100%
+          cat << 'EOF' > app/build.gradle
+          plugins {
+              id 'com.android.application'
+          }
+          android {
+              namespace 'com.example.app'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.example.app"
+                  minSdk 21
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          dependencies {
+              implementation 'androidx.appcompat:appcompat:1.6.1'
+              implementation 'com.google.android.material:material:1.9.0'
+              implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+          }
+          EOF
+
+          # 4. كتابة ملفات التكوين الأساسية للمشروع
+          cat << 'EOF' > settings.gradle
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "MyApplication"
+          include ':app'
+          EOF
+
+          cat << 'EOF' > build.gradle
+          plugins {
+              id 'com.android.application' version '8.2.2' apply false
+          }
+          EOF
 
       - name: Generate Fresh Gradle Wrapper
         run: |
-          gradle wrapper --gradle-version 8.2
+          gradle wrapper --gradle-version 8.2.2
 
-      - name: Build APK with Official Tools
+      - name: Build Official Android APK
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
